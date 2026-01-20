@@ -17,20 +17,19 @@ export class AuthService {
   async register({ password, email, name }: RegisterDto) {
     // Verifica si el correo ya está registrado
     const user = await this.usersService.findOneByEmail(email);
-    if (user) {
-      throw new BadRequestException("Email already exists");
-    }
-    // Encripta la contraseña antes de guardarla
-    const hashedPassword = await bcryptjs.hash(password, 10);
-    // Crea el usuario con rol por defecto
+    if (user) throw new BadRequestException("Email already exists");
+
+    // ✅ NO encriptar aquí; usersService.create ya lo hace
     await this.usersService.create({
       name,
       email,
-      password: hashedPassword,
-      rol: Role.PREFECTO, // Rol inicial del sistema
+      password, // <-- password en texto plano
+      rol: Role.PREFECTO,
     });
+
     return { message: "User created successfully" };
   }
+
 
   // Inicio de sesión
   async login({ email, password }: LoginDto) {

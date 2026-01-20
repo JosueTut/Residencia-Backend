@@ -6,6 +6,8 @@ import { DocentesModule } from './docentes/docentes.module';
 import { HorariosModule } from './horarios/horarios.module';
 import { AsistenciasModule } from './asistencias/asistencias.module';
 import { ConfigModule } from '@nestjs/config';
+import { EdificiosModule } from './edificios/edificios.module';
+import { CarrerasModule } from './carreras/carreras.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { ConfigModule } from '@nestjs/config';
     HorariosModule,
     AsistenciasModule,
     UsersModule,
+    EdificiosModule,
+    CarrerasModule,
   ],
   controllers: [],
   providers: [],

@@ -2,10 +2,7 @@ import { Type } from "class-transformer";
 import { IsArray, IsDateString, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
 import { EstadoAsistencia } from "../entities/asistencia.entity";
 
-export class CreateAsistenciaDto {
-    
-}
-
+export class CreateAsistenciaDto {}
 
 export class RegistroPaseListaDto {
   @IsInt()

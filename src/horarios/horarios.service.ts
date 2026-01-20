@@ -8,7 +8,6 @@ import { Docente } from 'src/docentes/entities/docente.entity';
 
 @Injectable()
 export class HorariosService {
-
   constructor(
     // Repositorio de horarios
     @InjectRepository(Horario)
@@ -21,14 +20,20 @@ export class HorariosService {
 
   // Crear un nuevo horario
   async create(createHorarioDto: CreateHorarioDto): Promise<Horario> {
-
     // Verifica que el docente exista
     const docente = await this.docentesRepository.findOne({
-      where: { id_docente: createHorarioDto.id_docente }
+      where: { id_docente: createHorarioDto.id_docente },
     });
 
     if (!docente) {
       throw new NotFoundException('Docente no encontrado');
+    }
+
+    // ✅ NUEVO: Bloquear docentes inactivos
+    if (!docente.activo) {
+      throw new BadRequestException(
+        'No se puede asignar horario: el docente está INACTIVO',
+      );
     }
 
     // Verifica que no exista un horario duplicado para el mismo docente
@@ -56,7 +61,6 @@ export class HorariosService {
       docente: docente,
     });
 
-    // Guarda el horario en la base de datos
     return await this.horariosRepository.save(horario);
   }
 
@@ -81,15 +85,79 @@ export class HorariosService {
     return horario;
   }
 
-  // Actualizar un horario
+  // ✅ Actualizar un horario (con validaciones)
   async update(id: number, updateHorarioDto: UpdateHorarioDto) {
-    const resultado = await this.horariosRepository.update(id, updateHorarioDto);
+    const horario = await this.horariosRepository.findOne({
+      where: { id_horario: id },
+      relations: ['docente'],
+    });
 
-    if (resultado.affected === 0) {
+    if (!horario) {
       throw new NotFoundException('Horario no encontrado');
     }
 
-    return this.findOne(id);
+    // Valores finales (si no vienen en dto, se quedan los actuales)
+    const finalIdDocente =
+      updateHorarioDto.id_docente ?? horario.id_docente;
+    const finalDia = updateHorarioDto.dia_semana ?? horario.dia_semana;
+    const finalHora = updateHorarioDto.hora_clase ?? horario.hora_clase;
+
+    // Si cambian docente/día/hora, validar duplicados
+    const cambioClave =
+      finalIdDocente !== horario.id_docente ||
+      finalDia !== horario.dia_semana ||
+      finalHora !== horario.hora_clase;
+
+    // Validar docente (existe y está activo)
+    const docente = await this.docentesRepository.findOne({
+      where: { id_docente: finalIdDocente },
+    });
+
+    if (!docente) {
+      throw new NotFoundException('Docente no encontrado');
+    }
+
+    // ✅ NUEVO: Bloquear docentes inactivos
+    if (!docente.activo) {
+      throw new BadRequestException(
+        'No se puede asignar/actualizar horario: el docente está INACTIVO',
+      );
+    }
+
+    if (cambioClave) {
+      const duplicado = await this.horariosRepository.findOne({
+        where: {
+          id_docente: finalIdDocente,
+          dia_semana: finalDia,
+          hora_clase: finalHora,
+        },
+      });
+
+      // Si existe y no es el mismo horario que estamos editando
+      if (duplicado && duplicado.id_horario !== horario.id_horario) {
+        throw new BadRequestException(
+          'El docente ya tiene un horario asignado en ese día y hora',
+        );
+      }
+    }
+
+    // Aplicar cambios
+    horario.id_docente = finalIdDocente;
+    horario.docente = docente;
+
+    if (updateHorarioDto.edificio !== undefined)
+      horario.edificio = updateHorarioDto.edificio;
+
+    if (updateHorarioDto.aula !== undefined)
+      horario.aula = updateHorarioDto.aula;
+
+    if (updateHorarioDto.hora_clase !== undefined)
+      horario.hora_clase = updateHorarioDto.hora_clase;
+
+    if (updateHorarioDto.dia_semana !== undefined)
+      horario.dia_semana = updateHorarioDto.dia_semana;
+
+    return await this.horariosRepository.save(horario);
   }
 
   // Eliminar un horario

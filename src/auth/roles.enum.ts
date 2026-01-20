@@ -5,5 +5,6 @@ export enum Role {
   PREFECTO = 'PREFECTO',
   RRHH = 'RRHH',
   DIRECTOR = 'DIRECTOR',
+  JEFE_CARRERA = 'JEFE_CARRERA', 
   ROOT = 'ROOT',
 }

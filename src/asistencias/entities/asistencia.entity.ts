@@ -1,56 +1,93 @@
-import {Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Horario } from 'src/horarios/entities/horario.entity';
+import { TipoDocente } from 'src/docentes/entities/docente.entity';
 
-  // Enum para los posibles estados de asistencia
-  export enum EstadoAsistencia {
-    PRESENTE = 'PRESENTE',
-    AUSENTE = 'AUSENTE',
-    INCAPACIDAD = 'INCAPACIDAD',
-    COMISION = 'COMISION',
-    RETARDO = 'RETARDO',
-    SUSPENDIDO = 'SUSPENDIDO',
-  }
+export enum EstadoAsistencia {
+  PRESENTE = 'PRESENTE',
+  AUSENTE = 'AUSENTE',
+  INCAPACIDAD = 'INCAPACIDAD',
+  COMISION = 'COMISION',
+  RETARDO = 'RETARDO',
+  SUSPENDIDO = 'SUSPENDIDO',
+}
 
-  // Entidad Asistencia
-  @Entity('Asistencias')
-  @Index('UQ_asistencia_fecha_horario', ['fecha', 'id_horario'], { unique: true }) // evita duplicados
-  export class Asistencia {
-    @PrimaryGeneratedColumn()
-    id_asistencia: number;
+@Entity('Asistencias')
+// ✅ OJO: id_horario ahora puede ser NULL, por lo que el UNIQUE con NULL
+// en MySQL permite múltiples NULL. Eso está bien para historial cuando el horario se borra.
+@Index('UQ_asistencia_fecha_horario', ['fecha', 'id_horario'], { unique: true })
+export class Asistencia {
+  @PrimaryGeneratedColumn()
+  id_asistencia: number;
 
-  // Guarda la fecha del pase de lista (solo fecha)
   @Column({ type: 'date' })
   fecha: string;
 
-  // Guarda el id de horario como columna
-  @Column({ type: 'int' })
-  id_horario: number;
+  // ✅ ahora es nullable (cuando se borra el horario, queda null)
+  @Column({ type: 'int', nullable: true })
+  id_horario: number | null;
 
-  // Relación con Horario
-  @ManyToOne(() => Horario, { eager: true, onDelete: 'CASCADE' })
+  // ✅ IMPORTANTE: SET NULL para NO BORRAR historial
+  @ManyToOne(() => Horario, { eager: true, nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_horario' })
-  horario: Horario;
+  horario: Horario | null;
 
-  // Estado de asistencia (tipo enum)
   @Column({
-    // Guarda el estado de asistencia
     type: 'enum',
-    // Enum de estados posibles
     enum: EstadoAsistencia,
-    // Valor por defecto
     default: EstadoAsistencia.PRESENTE,
   })
   estado: EstadoAsistencia;
 
-  // Nota opcional
   @Column({ type: 'varchar', length: 255, nullable: true })
   notaAdicional: string | null;
 
-  // Timestamps de creación y actualización
+  @Column({ type: 'time', nullable: true })
+  horaRegistro: string | null;
+
   @CreateDateColumn()
   createdAt: Date;
 
-  // Fecha de última actualización
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // ==========================
+  // ✅ SNAPSHOTS (docente)
+  // ==========================
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  docenteNombreSnapshot: string | null;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  docenteCarreraSnapshot: string | null;
+
+  @Column({ type: 'enum', enum: TipoDocente, nullable: true })
+  docenteTipoSnapshot: TipoDocente | null;
+
+  // para anti-duplicados aunque se borre el horario
+  @Column({ type: 'int', nullable: true })
+  docenteIdSnapshot: number | null;
+
+
+  // ==========================
+  // ✅ SNAPSHOTS (horario)
+  // ==========================
+  @Column({ type: 'varchar', length: 80, nullable: true })
+  edificioSnapshot: string | null;
+
+  @Column({ type: 'varchar', length: 80, nullable: true })
+  aulaSnapshot: string | null;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  horaClaseSnapshot: string | null;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  diaSemanaSnapshot: string | null;
 }

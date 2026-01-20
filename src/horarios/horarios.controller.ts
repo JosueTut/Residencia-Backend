@@ -3,17 +3,15 @@ import { HorariosService } from './horarios.service';
 import { CreateHorarioDto } from './dto/create-horario.dto';
 import { UpdateHorarioDto } from './dto/update-horario.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/roles.enum';
+import { Role } from '../auth/roles.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @UseGuards(AuthGuard, RolesGuard) // Protección por autenticación y roles
-@Roles(Role.RRHH, Role.DIRECTOR, Role.ROOT)
+@Roles(Role.RRHH, Role.DIRECTOR, Role.JEFE_CARRERA, Role.ROOT)
 @Controller('horarios')
 export class HorariosController {
-  constructor(
-    private readonly horariosService: HorariosService
-  ) {}
+  constructor(private readonly horariosService: HorariosService) {}
 
   // Crear horario
   @Post()

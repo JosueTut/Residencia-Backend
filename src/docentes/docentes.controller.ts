@@ -1,14 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DocentesService } from './docentes.service';
 import { CreateDocenteDto } from './dto/create-docente.dto';
 import { UpdateDocenteDto } from './dto/update-docente.dto';
+import { TipoDocente } from './entities/docente.entity';
 
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/roles.enum';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { AuthGuard } from 'src/auth/auth.guard';
+
+@UseGuards(AuthGuard, RolesGuard)
+@Roles(Role.RRHH, Role.DIRECTOR, Role.JEFE_CARRERA, Role.ROOT) 
 @Controller('docentes') // /api/v1/docentes
 export class DocentesController {
-
-  constructor(
-    private readonly docentesService: DocentesService,
-  ) {}
+  constructor(private readonly docentesService: DocentesService) {}
 
   // Registrar un nuevo docente
   @Post()
@@ -28,10 +33,15 @@ export class DocentesController {
     return this.docentesService.findOne(id);
   }
 
-  // Actualizar datos de un docente
+  // activar / desactivar un docente
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateDocenteDto: UpdateDocenteDto) {
-    return this.docentesService.update(id, updateDocenteDto);
+  update(@Param('id') id: string, @Body() dto: UpdateDocenteDto) {
+    return this.docentesService.updateDocente(Number(id), dto);
+  }
+
+  @Patch(':id/tipo')
+  updateTipo(@Param('id') id: string, @Body('tipo') tipo: TipoDocente) {
+    return this.docentesService.updateTipo(+id, tipo);
   }
 
   // Eliminar un docente

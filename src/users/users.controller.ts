@@ -5,7 +5,7 @@ import { UsersService } from './users.service';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/roles.enum';
+import { Role } from '../auth/roles.enum';
 
 @Controller('users')
 @UseGuards(AuthGuard, RolesGuard) // Protege todas las rutas

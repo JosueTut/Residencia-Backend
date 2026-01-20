@@ -1,4 +1,22 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateDocenteDto } from './create-docente.dto';
+import { IsBoolean, IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import { TipoDocente } from '../entities/docente.entity';
 
-export class UpdateDocenteDto extends PartialType(CreateDocenteDto) {}
+export class UpdateDocenteDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(150)
+  nombre?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(150)
+  carrera?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  activo?: boolean;
+
+  @IsOptional()
+  @IsEnum(TipoDocente)
+  tipo?: TipoDocente;
+}
