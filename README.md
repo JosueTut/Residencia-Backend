@@ -38,23 +38,15 @@ cp .env.example .env
 
 Ejemplo de .env usado en desarrollo:
 
-# ===============================
-# CONFIGURACIÓN GENERAL
-# ===============================
+## CONFIGURACIÓN GENERAL
 NODE_ENV=
 PORT=
 
-
-# ===============================
-# JWT (AUTENTICACIÓN)
-# ===============================
+## JWT (AUTENTICACIÓN)
 JWT_SECRET=
 JWT_EXPIRES_IN=
 
-
-# ===============================
-# BASE DE DATOS (MYSQL)
-# ===============================
+## BASE DE DATOS (MYSQL)
 DB_TYPE=
 DB_HOST=
 DB_PORT=
@@ -62,7 +54,7 @@ DB_USERNAME=
 DB_PASSWORD=
 DB_NAME=
 
-# SOLO DESARROLLO
+## SOLO DESARROLLO
 DB_SYNCHRONIZE=
 
 Notas:
