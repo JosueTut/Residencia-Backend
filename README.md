@@ -38,26 +38,26 @@ cp .env.example .env
 
 Ejemplo de .env usado en desarrollo:
 
-## CONFIGURACIÓN GENERAL
-NODE_ENV=
-PORT=
+## Configuración general
+- NODE_ENV=
+- PORT=
 
-## JWT (AUTENTICACIÓN)
-JWT_SECRET=
-JWT_EXPIRES_IN=
+## JWT (Autenticación)
+- JWT_SECRET=
+- JWT_EXPIRES_IN=
 
-## BASE DE DATOS (MYSQL)
-DB_TYPE=
-DB_HOST=
-DB_PORT=
-DB_USERNAME=
-DB_PASSWORD=
-DB_NAME=
+## Base de datos (MYSQL)
+- DB_TYPE=
+- DB_HOST=
+- DB_PORT=
+- DB_USERNAME=
+- DB_PASSWORD=
+- DB_NAME=
 
-## SOLO DESARROLLO
+## Solo desarrollo
 DB_SYNCHRONIZE=
 
-Notas:
+## Notas:
 
 DB_PORT=3307 porque el contenedor MySQL expone el 3306 internamente pero se mapea a 3307 en tu máquina.
 
