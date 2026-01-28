@@ -16,7 +16,7 @@ export class AsistenciasService {
     private readonly asistenciaRepo: Repository<Asistencia>,
   ) {}
 
-  /* ===================== REPORTES ===================== */
+  /* REPORTES */
 
   async getReportePorFecha(fecha: string) {
     if (!fecha) throw new BadRequestException('fecha es requerida');
@@ -97,7 +97,7 @@ export class AsistenciasService {
     }));
   }
 
-  /* ===================== PASE DE LISTA ===================== */
+  /* PASE DE LISTA */
 
   private getDiaSemana(fecha: string): string {
     const dias = [
@@ -128,7 +128,7 @@ export class AsistenciasService {
 
     const horarios = await qb.getMany();
 
-    // ✅ Buscar asistencias ya registradas para esta fecha y esos horarios
+    // Buscar asistencias ya registradas para esta fecha y esos horarios
     const idsHorarios = horarios.map(h => h.id_horario);
 
     const asistencias = idsHorarios.length
@@ -149,7 +149,7 @@ export class AsistenciasService {
       horarios.map(async h => {
         const a = mapAsistencia.get(h.id_horario);
 
-        // ✅ Si ya hay asistencia para ESTE id_horario, no bloqueamos (es el mismo registro)
+        // Si ya hay asistencia para ESTE id_horario, no bloqueamos (es el mismo registro)
         if (a) {
           return {
             idHorario: h.id_horario,
@@ -164,14 +164,14 @@ export class AsistenciasService {
             notaAdicional: a.notaAdicional ?? null,
             horaRegistro: a.horaRegistro ?? null,
 
-            // ✅ nuevos para UX
+            // nuevos para UX
             bloqueado: false,
             motivoBloqueo: null,
             idAsistenciaExistente: a.id_asistencia ?? null,
           };
         }
 
-        // ✅ NUEVO: si ya existe una asistencia ese día para el mismo docente y hora,
+        // si ya existe una asistencia ese día para el mismo docente y hora,
         // aunque sea de otro horario (por ejemplo borrado y recreado), entonces BLOQUEAR.
         const docenteId = h.id_docente;
         const docenteNombre = h.docente?.nombre ?? '';
@@ -193,12 +193,12 @@ export class AsistenciasService {
             diaSemana: h.dia_semana,
             horaClase: h.hora_clase,
 
-            // ✅ sin datos porque NO se debe capturar aquí (ya existe otro pase de lista)
+            // Sin datos porque NO se debe capturar aquí (ya existe otro pase de lista)
             estado: null,
             notaAdicional: null,
             horaRegistro: null,
 
-            // ✅ nuevos para UX
+            // Nuevos para UX
             bloqueado: true,
             motivoBloqueo:
               `Ya existe pase de lista para ${docenteNombre || 'este docente'} el ${fecha} a las ${h.hora_clase}. ` +
@@ -207,7 +207,7 @@ export class AsistenciasService {
           };
         }
 
-        // ✅ Normal: se puede pasar lista
+        // Normal: se puede pasar lista
         return {
           idHorario: h.id_horario,
           profesor: h.docente?.nombre ?? 'Sin profesor',
@@ -289,7 +289,7 @@ export class AsistenciasService {
     const mapHorarios = new Map<number, Horario>();
     horarios.forEach(h => mapHorarios.set(h.id_horario, h));
 
-    // ✅ Traer asistencias ya registradas para esa fecha y esos horarios (por id_horario directo)
+    // Traer asistencias ya registradas para esa fecha y esos horarios (por id_horario directo)
     const existentes = await this.asistenciaRepo.find({
       where: {
         fecha,
@@ -297,7 +297,7 @@ export class AsistenciasService {
       },
     });
 
-    // ✅ Mapear por id_horario (ya no dependemos de la relación "horario")
+    // Mapear por id_horario (ya no dependemos de la relación "horario")
     const mapExistentes = new Map<number, Asistencia>();
     existentes.forEach(a => {
       if (a.id_horario != null) mapExistentes.set(a.id_horario, a);
@@ -314,7 +314,7 @@ export class AsistenciasService {
           throw new BadRequestException('Horario no encontrado para un registro');
         }
 
-        // ✅ Si ya existe por (fecha + id_horario), se actualiza (comportamiento actual)
+        // Si ya existe por (fecha + id_horario), se actualiza (comportamiento actual)
         if (existente) {
           existente.estado = r.estado;
           existente.notaAdicional = r.notaAdicional ?? null;
@@ -322,7 +322,7 @@ export class AsistenciasService {
           return existente;
         }
 
-        // ✅ NUEVO: bloquear duplicados por (fecha + docente + horaClase)
+        // Bloquear duplicados por (fecha + docente + horaClase)
         const docenteId = h.id_docente;
         const docenteNombre = h.docente?.nombre ?? '';
 
@@ -341,20 +341,20 @@ export class AsistenciasService {
           );
         }
 
-        // ✅ Si no hay duplicado, crear normal
+        // Si no hay duplicado, crear normal
         return this.asistenciaRepo.create({
           fecha,
           id_horario: r.idHorario,
           estado: r.estado,
           notaAdicional: r.notaAdicional ?? null,
 
-          // ✅ snapshots docente
+          // snapshots docente
           docenteIdSnapshot: h?.id_docente ?? null,
           docenteNombreSnapshot: h?.docente?.nombre ?? null,
           docenteCarreraSnapshot: h?.docente?.carrera ?? null,
           docenteTipoSnapshot: h?.docente?.tipo ?? null,
 
-          // ✅ snapshots horario
+          // snapshots horario
           edificioSnapshot: h?.edificio ?? null,
           aulaSnapshot: h?.aula ?? null,
           horaClaseSnapshot: h?.hora_clase ?? null,
@@ -374,7 +374,7 @@ export class AsistenciasService {
     };
   }
 
-  /* ===================== MODIFICACIÓN ===================== */
+  /* MODIFICACIÓN */
 
   async getAsistenciasPorFecha(fecha: string) {
     if (!fecha) throw new BadRequestException('La fecha es requerida');
@@ -426,7 +426,7 @@ export class AsistenciasService {
     };
   }
 
-  /* ===================== STUBS ===================== */
+  /* STUBS */
 
   create(createAsistenciaDto: CreateAsistenciaDto) {
     return 'This action adds a new asistencia';

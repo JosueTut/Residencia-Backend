@@ -16,7 +16,7 @@ export class UsersService {
   // Crear un nuevo usuario
   async create(dto: CreateUserDto) {
 
-    // ✅ Validar rol contra enum
+    // Validar rol contra enum
     const rolNormalizado = String(dto.rol ?? '')
       .toUpperCase()
       .trim()
@@ -47,7 +47,7 @@ export class UsersService {
 
     const saved = await this.usersRepo.save(user);
 
-    // ✅ nunca regreses password
+    // nunca regreses password
     return { id: saved.id, name: saved.name, email: saved.email, rol: saved.rol };
   }
 
@@ -75,7 +75,7 @@ export class UsersService {
     return user;
   }
 
-  // ✅ Actualizar info básica (name/email/rol) y regresar el usuario actualizado
+  // Actualizar info básica (name/email/rol) y regresar el usuario actualizado
   async update(id: number, dto: UpdateUserDto) {
     const user = await this.usersRepo.findOne({ where: { id } });
     if (!user) throw new NotFoundException('User not found');
@@ -98,7 +98,7 @@ export class UsersService {
 
     const saved = await this.usersRepo.save(user);
 
-    // ✅ regresa sin password (esto lo necesita tu frontend)
+    // Regresa sin password (esto lo necesita tu frontend)
     return { id: saved.id, name: saved.name, email: saved.email, rol: saved.rol };
   }
 

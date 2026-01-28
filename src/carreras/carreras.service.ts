@@ -52,15 +52,6 @@ export class CarrerasService {
   async remove(id: number) {
     const row = await this.findOne(id);
 
-    // ✅ Si quieres BLOQUEAR el delete si hay docentes usando esa carrera:
-    // (solo aplica si tus docentes guardan carrera como TEXTO)
-    //
-    // OJO: esto requiere tu repo/tabla de docentes. Si no quieres esto ahora, bórralo.
-    //
-    // Ejemplo (si tienes tabla docentes con columna "carrera" texto):
-    // const count = await this.docentesRepo.count({ where: { carrera: row.nombre } });
-    // if (count > 0) throw new ConflictException(`No se puede eliminar: hay ${count} docente(s) usando esta carrera.`);
-
     await this.repo.remove(row);
     return { message: 'Carrera eliminada correctamente' };
   }

@@ -19,7 +19,7 @@ export class AuthService {
     const user = await this.usersService.findOneByEmail(email);
     if (user) throw new BadRequestException("Email already exists");
 
-    // ✅ NO encriptar aquí; usersService.create ya lo hace
+    // NO encriptar aquí; usersService.create ya lo hace
     await this.usersService.create({
       name,
       email,

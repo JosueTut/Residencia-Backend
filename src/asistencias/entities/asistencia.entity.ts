@@ -21,8 +21,6 @@ export enum EstadoAsistencia {
 }
 
 @Entity('Asistencias')
-// ✅ OJO: id_horario ahora puede ser NULL, por lo que el UNIQUE con NULL
-// en MySQL permite múltiples NULL. Eso está bien para historial cuando el horario se borra.
 @Index('UQ_asistencia_fecha_horario', ['fecha', 'id_horario'], { unique: true })
 export class Asistencia {
   @PrimaryGeneratedColumn()
@@ -31,11 +29,10 @@ export class Asistencia {
   @Column({ type: 'date' })
   fecha: string;
 
-  // ✅ ahora es nullable (cuando se borra el horario, queda null)
   @Column({ type: 'int', nullable: true })
   id_horario: number | null;
 
-  // ✅ IMPORTANTE: SET NULL para NO BORRAR historial
+  // IMPORTANTE: SET NULL para NO BORRAR historial
   @ManyToOne(() => Horario, { eager: true, nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_horario' })
   horario: Horario | null;
@@ -59,9 +56,7 @@ export class Asistencia {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // ==========================
-  // ✅ SNAPSHOTS (docente)
-  // ==========================
+  // SNAPSHOTS (docente)
   @Column({ type: 'varchar', length: 150, nullable: true })
   docenteNombreSnapshot: string | null;
 
@@ -75,10 +70,7 @@ export class Asistencia {
   @Column({ type: 'int', nullable: true })
   docenteIdSnapshot: number | null;
 
-
-  // ==========================
-  // ✅ SNAPSHOTS (horario)
-  // ==========================
+  // SNAPSHOTS (horario)
   @Column({ type: 'varchar', length: 80, nullable: true })
   edificioSnapshot: string | null;
 

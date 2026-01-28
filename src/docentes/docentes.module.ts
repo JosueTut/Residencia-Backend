@@ -9,7 +9,7 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [
     // Registra la entidad Docente para su uso con TypeORM
     TypeOrmModule.forFeature([Docente]),
-    forwardRef(() => AuthModule), // ✅ para que AuthGuard tenga JwtService
+    forwardRef(() => AuthModule), // Para que AuthGuard tenga JwtService
   ],
   controllers: [DocentesController],
   providers: [DocentesService],

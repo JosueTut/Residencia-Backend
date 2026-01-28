@@ -10,7 +10,7 @@ import { AuthModule } from 'src/auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Asistencia, Horario, Docente]),
-    forwardRef(() => AuthModule), // ✅
+    forwardRef(() => AuthModule), // Para que AuthGuard tenga JwtService
   ],
   controllers: [AsistenciasController],
   providers: [AsistenciasService],

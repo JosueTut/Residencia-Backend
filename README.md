@@ -1,98 +1,111 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Residencia - Backend (API)
+Sistema para la supervisión de la asistencia del docente en el aula (TecNM Campus Cancún).
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este repositorio contiene el backend (API REST) desarrollado con NestJS. La API centraliza la lógica de negocio, la seguridad por roles y el acceso a datos, permitiendo que el frontend consuma endpoints para: pase de lista por fecha, guardado masivo de supervisión, consulta histórica, reportes y correcciones controladas.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Tecnologías
+- Node.js + NestJS
+- TypeORM
+- MySQL 8 (Docker)
+- JWT (autenticación)
+- Control de acceso por roles (guards)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## Requisitos previos
+- Git
+- Node.js (recomendado: 18+)
+- Docker y Docker Compose
 
+---
+
+## 1) Clonar el repositorio
 ```bash
-$ npm install
+git clone https://github.com/JosueTut/Residencia-Backend.git
+cd Residencia-Backend
 ```
 
-## Compile and run the project
+## 2) Configurar variables de entorno
+Este proyecto incluye un archivo .env.example. Crear un .env en la raíz y copiar el contenido.
+
+Linux/macOS:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Ejemplo de .env usado en desarrollo:
+
+# ===============================
+# CONFIGURACIÓN GENERAL
+# ===============================
+NODE_ENV=
+PORT=
+
+
+# ===============================
+# JWT (AUTENTICACIÓN)
+# ===============================
+JWT_SECRET=
+JWT_EXPIRES_IN=
+
+
+# ===============================
+# BASE DE DATOS (MYSQL)
+# ===============================
+DB_TYPE=
+DB_HOST=
+DB_PORT=
+DB_USERNAME=
+DB_PASSWORD=
+DB_NAME=
+
+# SOLO DESARROLLO
+DB_SYNCHRONIZE=
+
+Notas:
+
+DB_PORT=3307 porque el contenedor MySQL expone el 3306 internamente pero se mapea a 3307 en tu máquina.
+
+DB_SYNCHRONIZE=true es solo para desarrollo (TypeORM crea/actualiza tablas automáticamente).
+
+## 3) Levantar la base de datos con Docker
+
+Este repo incluye docker-compose.yml. Para levantar MySQL:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up -d
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Verificar contenedor: 
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker ps
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 4) Instalar dependencias del backend
 
-## Resources
+```bash
+npm install 
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## 5) Ejecutar el backend
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+npm run start:dev
+```
 
-## Support
+El backend quedará disponible en:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+http://localhost:3000
 
-## Stay in touch
+## Documentación de código
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+El proyecto está comentado por módulos/archivos para facilitar mantenimiento y mejora del sistema. Se recomienda revisar:
 
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- entidades (entities)
+- DTOs (validaciones)
+- servicios (lógica de negocio)
+- guards/decorators (roles y autorización)

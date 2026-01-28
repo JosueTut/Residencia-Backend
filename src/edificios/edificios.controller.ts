@@ -41,7 +41,7 @@ export class EdificiosController {
     return this.service.remove(Number(id));
   }
 
-  // ===== Salones =====
+  // Salones
   @Post(':id/salones')
   addSalon(@Param('id') id: string, @Body() dto: CreateSalonDto) {
     return this.service.addSalon(Number(id), dto);

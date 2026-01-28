@@ -29,7 +29,7 @@ export class HorariosService {
       throw new NotFoundException('Docente no encontrado');
     }
 
-    // ✅ NUEVO: Bloquear docentes inactivos
+    // Bloquear docentes inactivos
     if (!docente.activo) {
       throw new BadRequestException(
         'No se puede asignar horario: el docente está INACTIVO',
@@ -85,7 +85,7 @@ export class HorariosService {
     return horario;
   }
 
-  // ✅ Actualizar un horario (con validaciones)
+  // Actualizar un horario
   async update(id: number, updateHorarioDto: UpdateHorarioDto) {
     const horario = await this.horariosRepository.findOne({
       where: { id_horario: id },
@@ -117,7 +117,7 @@ export class HorariosService {
       throw new NotFoundException('Docente no encontrado');
     }
 
-    // ✅ NUEVO: Bloquear docentes inactivos
+    // Bloquear docentes inactivos
     if (!docente.activo) {
       throw new BadRequestException(
         'No se puede asignar/actualizar horario: el docente está INACTIVO',

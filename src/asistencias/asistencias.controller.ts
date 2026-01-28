@@ -25,10 +25,7 @@ import { RangoAsistenciasDto } from './dto/rango-asistencias.dto';
 export class AsistenciasController {
   constructor(private readonly asistenciasService: AsistenciasService) {}
 
-  // =========================
   // Pase de lista
-  // =========================
-
   @Get('pase-lista')
   @Roles(Role.PREFECTO, Role.DIRECTOR, Role.RRHH, Role.ROOT)
   getPaseLista(@Query('fecha') fecha: string, @Query('hora') hora?: string) {
@@ -42,12 +39,9 @@ export class AsistenciasController {
     return this.asistenciasService.guardarPaseLista(dto, usuarioId);
   }
 
-  // =========================
   // Asistencias (vista/corrección)
-  // =========================
 
-  // ✅ Ver asistencias por fecha (para corregir)
-  // GET /asistencias?fecha=2026-01-05
+  // Ver asistencias por fecha (para corregir)
   @Get()
   @Roles(
     Role.SUB_ACADEMICA,
@@ -65,7 +59,7 @@ export class AsistenciasController {
     return this.asistenciasService.getAsistenciasPorFecha(fecha);
   }
 
-  // ✅ Consultar por rango
+  // Consultar por rango
   // GET /asistencias/rango?fechaInicio=2025-12-25&fechaFin=2026-01-05
   @Get('rango')
   @Roles(
@@ -81,7 +75,7 @@ export class AsistenciasController {
     return this.asistenciasService.getPorRango(q.fechaInicio, q.fechaFin);
   }
 
-  // ✅ Reporte por fecha
+  // Reporte por fecha
   @Get('reporte')
   @Roles(
     Role.SUB_ACADEMICA,
@@ -96,10 +90,7 @@ export class AsistenciasController {
     return this.asistenciasService.getReportePorFecha(fecha);
   }
 
-  // =========================
-  // CRUD puntual
-  // =========================
-
+  // CRUD de asistencias individuales
   @Get(':id')
   @Roles(
     Role.SUB_ACADEMICA,
@@ -114,7 +105,7 @@ export class AsistenciasController {
     return this.asistenciasService.findOne(+id);
   }
 
-  // ✅ Modificación de asistencia
+  // Modificación de asistencia
   @Patch(':id')
   @Roles(
     Role.PREFECTO,

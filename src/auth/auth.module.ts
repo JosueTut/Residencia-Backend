@@ -9,13 +9,13 @@ import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [
-    // ✅ forwardRef rompe la dependencia circular Auth <-> Users
+    // forwardRef rompe la dependencia circular Auth <-> Users
     forwardRef(() => UsersModule),
 
-    // ✅ ConfigModule (ya lo tienes global en AppModule, pero no estorba)
+    // ConfigModule (ya lo tienes global en AppModule, pero no estorba)
     ConfigModule,
 
-    // ✅ JWT configurado desde variables de entorno (.env)
+    // JWT configurado desde variables de entorno (.env)
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (cfg: ConfigService) => ({

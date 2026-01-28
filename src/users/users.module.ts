@@ -9,7 +9,7 @@ import { AuthModule } from 'src/auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    forwardRef(() => AuthModule), // ✅ importante
+    forwardRef(() => AuthModule), 
   ],
   controllers: [UsersController],
   providers: [UsersService],

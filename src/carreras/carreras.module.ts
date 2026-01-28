@@ -7,7 +7,7 @@ import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Carrera]), 
-  forwardRef(() => AuthModule), // ✅ para que AuthGuard tenga JwtService
+  forwardRef(() => AuthModule), // Para que AuthGuard tenga JwtService
 ],
   controllers: [CarrerasController],
   providers: [CarrerasService],
